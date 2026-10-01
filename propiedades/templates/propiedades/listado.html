@@ -1,0 +1,41 @@
+{% extends "propiedades/base.html" %}
+
+{% block contenido %}
+<form class="filtros" method="get">
+  <select name="operacion">
+    <option value="">Venta o alquiler</option>
+    {% for valor, nombre in operaciones %}
+      <option value="{{ valor }}" {% if filtros.operacion == valor %}selected{% endif %}>{{ nombre }}</option>
+    {% endfor %}
+  </select>
+  <select name="tipo">
+    <option value="">Todos los tipos</option>
+    {% for valor, nombre in tipos %}
+      <option value="{{ valor }}" {% if filtros.tipo == valor %}selected{% endif %}>{{ nombre }}</option>
+    {% endfor %}
+  </select>
+  <input type="text" name="zona" placeholder="Zona" value="{{ filtros.zona }}">
+  <button type="submit">Buscar</button>
+</form>
+
+{% if propiedades %}
+  <div class="grilla">
+    {% for p in propiedades %}
+      <a class="card" href="{% url 'propiedades:detalle' p.pk %}">
+        {% if p.foto %}
+          <img src="{{ p.foto.url }}" alt="{{ p.titulo }}">
+        {% else %}
+          <div class="sin-foto">Sin foto</div>
+        {% endif %}
+        <div class="info">
+          <div class="etiqueta">{{ p.get_tipo_display }} en {{ p.get_operacion_display|lower }} · {{ p.zona }}</div>
+          <h3>{{ p.titulo }}</h3>
+          <div class="precio">{{ p.moneda }} {{ p.precio|floatformat:0 }}</div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No hay propiedades con esos filtros.</p>
+{% endif %}
+{% endblock %}
