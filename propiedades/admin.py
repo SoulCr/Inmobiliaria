@@ -1,3 +1,9 @@
 from django.contrib import admin
+from .models import Propiedad
 
-# Register your models here.
+
+@admin.register(Propiedad)
+class PropiedadAdmin(admin.ModelAdmin):
+    list_display = ("titulo", "tipo", "operacion", "moneda", "precio", "zona", "disponible")
+    list_filter = ("tipo", "operacion", "disponible")
+    search_fields = ("titulo", "zona", "direccion")
