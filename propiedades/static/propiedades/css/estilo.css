@@ -128,3 +128,13 @@ body {
     transform: none;
   }
 }
+
+.navbar-logo  {
+  width: 120px;
+  height: auto;
+}
+
+.footer-logo-img {
+  width: 120px;
+  height: auto;
+}
