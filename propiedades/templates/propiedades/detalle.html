@@ -7,8 +7,14 @@
 <h1>{{ propiedad.titulo }}</h1>
 <p class="etiqueta">{{ propiedad.get_tipo_display }} en {{ propiedad.get_operacion_display|lower }}</p>
 
-{% if propiedad.foto %}
-  <img src="{{ propiedad.foto.url }}" alt="{{ propiedad.titulo }}" style="max-width:100%;border-radius:10px">
+{% if propiedad.fotos.all %}
+  <div class="galeria">
+    {% for f in propiedad.fotos.all %}
+      <a href="{{ f.imagen.url }}" target="_blank">
+        <img src="{{ f.imagen.url }}" alt="{{ propiedad.titulo }}">
+      </a>
+    {% endfor %}
+  </div>
 {% endif %}
 
 <p class="precio">{{ propiedad.moneda }} {{ propiedad.precio|floatformat:0 }}</p>
@@ -21,4 +27,11 @@
 </ul>
 
 <p>{{ propiedad.descripcion|linebreaksbr }}</p>
+
+<h2>Consultar por esta propiedad</h2>
+<form method="post" class="consulta">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Enviar consulta</button>
+</form>
 {% endblock %}

@@ -31,3 +31,31 @@ class Propiedad(models.Model):
 
     def __str__(self):
         return f"{self.titulo} ({self.get_operacion_display()})"
+
+class Consulta(models.Model):
+    propiedad = models.ForeignKey(Propiedad, on_delete=models.CASCADE, related_name="consultas")
+    nombre = models.CharField(max_length=100)
+    email = models.EmailField()
+    telefono = models.CharField(max_length=30, blank=True)
+    mensaje = models.TextField()
+    creada = models.DateTimeField(auto_now_add=True)
+    atendida = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["-creada"]
+
+    def __str__(self):
+        return f"{self.nombre} - {self.propiedad.titulo}"
+
+class FotoPropiedad(models.Model):
+    propiedad = models.ForeignKey(Propiedad, on_delete=models.CASCADE, related_name="fotos")
+    imagen = models.ImageField(upload_to="propiedades/galeria/")
+    orden = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["orden", "id"]
+        verbose_name = "foto"
+        verbose_name_plural = "fotos"
+
+    def __str__(self):
+        return f"Foto de {self.propiedad.titulo}"
