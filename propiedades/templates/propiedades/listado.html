@@ -1,41 +1,70 @@
 {% extends "propiedades/base.html" %}
 
 {% block contenido %}
-<form class="filtros" method="get">
-  <select name="operacion">
-    <option value="">Venta o alquiler</option>
-    {% for valor, nombre in operaciones %}
-      <option value="{{ valor }}" {% if filtros.operacion == valor %}selected{% endif %}>{{ nombre }}</option>
-    {% endfor %}
-  </select>
-  <select name="tipo">
-    <option value="">Todos los tipos</option>
-    {% for valor, nombre in tipos %}
-      <option value="{{ valor }}" {% if filtros.tipo == valor %}selected{% endif %}>{{ nombre }}</option>
-    {% endfor %}
-  </select>
-  <input type="text" name="zona" placeholder="Zona" value="{{ filtros.zona }}">
-  <button type="submit">Buscar</button>
+<form class="row g-2 mb-4" method="get">
+  <div class="col-12 col-md-3">
+    <select name="operacion" class="form-select">
+      <option value="">Venta o alquiler</option>
+      {% for valor, nombre in operaciones %}
+        <option value="{{ valor }}" {% if filtros.operacion == valor %}selected{% endif %}>{{ nombre }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-12 col-md-3">
+    <select name="tipo" class="form-select">
+      <option value="">Todos los tipos</option>
+      {% for valor, nombre in tipos %}
+        <option value="{{ valor }}" {% if filtros.tipo == valor %}selected{% endif %}>{{ nombre }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-12 col-md-4">
+    <input type="text" name="zona" class="form-control" placeholder="Zona" value="{{ filtros.zona }}">
+  </div>
+  <div class="col-12 col-md-2">
+    <button type="submit" class="btn btn-primary w-100">Buscar</button>
+  </div>
 </form>
 
-{% if propiedades %}
-  <div class="grilla">
-    {% for p in propiedades %}
-      <a class="card" href="{% url 'propiedades:detalle' p.pk %}">
-        {% if p.foto %}
-          <img src="{{ p.foto.url }}" alt="{{ p.titulo }}">
-        {% else %}
-          <div class="sin-foto">Sin foto</div>
-        {% endif %}
-        <div class="info">
-          <div class="etiqueta">{{ p.get_tipo_display }} en {{ p.get_operacion_display|lower }} · {{ p.zona }}</div>
-          <h3>{{ p.titulo }}</h3>
-          <div class="precio">{{ p.moneda }} {{ p.precio|floatformat:0 }}</div>
-        </div>
-      </a>
+{% if pagina %}
+  <div class="row g-4">
+    {% for p in pagina %}
+      <div class="col-12 col-md-6 col-lg-4">
+        <a class="card card-propiedad h-100 text-decoration-none text-reset" href="{% url 'propiedades:detalle' p.pk %}">
+          {% if p.foto %}
+            <img src="{{ p.foto.url }}" class="card-img-top" alt="{{ p.titulo }}">
+          {% else %}
+            <div class="sin-foto">Sin foto</div>
+          {% endif %}
+          <div class="card-body">
+            <span class="badge badge-operacion mb-2">{{ p.get_operacion_display }}</span>
+            <div class="etiqueta">{{ p.get_tipo_display }} · {{ p.zona }}</div>
+            <h5 class="card-title mt-1">{{ p.titulo }}</h5>
+            <div class="precio fs-5">{{ p.moneda }} {{ p.precio|floatformat:0 }}</div>
+          </div>
+        </a>
+      </div>
     {% endfor %}
   </div>
+
+  {% if pagina.has_other_pages %}
+    <nav class="mt-4" aria-label="Paginación">
+      <ul class="pagination justify-content-center">
+        {% if pagina.has_previous %}
+          <li class="page-item"><a class="page-link" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ pagina.previous_page_number }}">« Anterior</a></li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">« Anterior</span></li>
+        {% endif %}
+        <li class="page-item active"><span class="page-link">{{ pagina.number }} / {{ pagina.paginator.num_pages }}</span></li>
+        {% if pagina.has_next %}
+          <li class="page-item"><a class="page-link" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ pagina.next_page_number }}">Siguiente »</a></li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">Siguiente »</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
 {% else %}
-  <p>No hay propiedades con esos filtros.</p>
+  <div class="alert alert-secondary">No hay propiedades con esos filtros.</div>
 {% endif %}
 {% endblock %}

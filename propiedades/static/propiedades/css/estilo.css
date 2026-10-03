@@ -1,0 +1,130 @@
+/* ==========================================================
+   Inmobiliaria - estilos propios (se suman a Bootstrap 5.3)
+   Paleta: azul marino y gris, con un acento dorado discreto
+   ========================================================== */
+
+:root {
+  --navy: #14213d;
+  --navy-claro: #1f3358;
+  --navy-oscuro: #0e1729;
+  --gris-fondo: #f3f4f6;
+  --gris-texto: #6b7280;
+  --acento: #b08d57;
+
+  /* Hace que los componentes de Bootstrap tomen el azul marino */
+  --bs-primary: #14213d;
+  --bs-primary-rgb: 20, 33, 61;
+  --bs-link-color: #14213d;
+  --bs-link-hover-color: #1f3358;
+}
+
+body {
+  background: var(--gris-fondo);
+  color: #1f2937;
+}
+
+/* ---------- Barra superior y pie ---------- */
+.barra {
+  background: var(--navy);
+}
+
+.pie {
+  background: var(--navy);
+  color: #cbd5e1;
+}
+
+/* ---------- Botones ---------- */
+.btn-primary {
+  --bs-btn-bg: var(--navy);
+  --bs-btn-border-color: var(--navy);
+  --bs-btn-hover-bg: var(--navy-claro);
+  --bs-btn-hover-border-color: var(--navy-claro);
+  --bs-btn-active-bg: var(--navy-oscuro);
+  --bs-btn-active-border-color: var(--navy-oscuro);
+}
+
+/* ---------- Tarjetas del listado ---------- */
+.card-propiedad {
+  border: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+  transition: transform .15s, box-shadow .15s;
+}
+
+.card-propiedad:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(20, 33, 61, .15);
+}
+
+.card-propiedad:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+
+.card-propiedad .card-img-top,
+.sin-foto {
+  height: 200px;
+  object-fit: cover;
+}
+
+.sin-foto {
+  background: #e5e7eb;
+  color: var(--gris-texto);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- Textos y etiquetas ---------- */
+.precio {
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.etiqueta {
+  color: var(--gris-texto);
+  font-size: .85rem;
+}
+
+.badge-operacion {
+  background: var(--acento);
+  color: #fff;
+  font-weight: 500;
+}
+
+/* ---------- Detalle de la propiedad ---------- */
+.foto-detalle {
+  height: 420px;
+  object-fit: cover;
+}
+
+.lateral {
+  position: sticky;
+  top: 1rem;
+}
+
+/* ---------- Paginación ---------- */
+.pagination {
+  --bs-pagination-color: var(--navy);
+  --bs-pagination-hover-color: var(--navy-claro);
+  --bs-pagination-active-bg: var(--navy);
+  --bs-pagination-active-border-color: var(--navy);
+  --bs-pagination-focus-color: var(--navy);
+}
+
+/* ---------- Pantallas chicas ---------- */
+@media (max-width: 576px) {
+  .foto-detalle {
+    height: 260px;
+  }
+}
+
+/* ---------- Respetar "reducir movimiento" ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .card-propiedad {
+    transition: none;
+  }
+
+  .card-propiedad:hover {
+    transform: none;
+  }
+}

@@ -7,4 +7,9 @@ class ConsultaForm(forms.ModelForm):
     class Meta:
         model = Consulta
         fields = ["nombre", "email", "telefono", "mensaje"]
-        widgets = {"mensaje": forms.Textarea(attrs={"rows": 4})}
+        widgets = {
+            "nombre": forms.TextInput(attrs={"class": "form-control"}),
+            "email": forms.EmailInput(attrs={"class": "form-control"}),
+            "telefono": forms.TextInput(attrs={"class": "form-control"}),
+            "mensaje": forms.Textarea(attrs={"class": "form-control", "rows": 4}),
+        }

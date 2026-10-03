@@ -3,35 +3,71 @@
 {% block titulo %}{{ propiedad.titulo }}{% endblock %}
 
 {% block contenido %}
-<p><a href="{% url 'propiedades:listado' %}">← Volver al listado</a></p>
-<h1>{{ propiedad.titulo }}</h1>
-<p class="etiqueta">{{ propiedad.get_tipo_display }} en {{ propiedad.get_operacion_display|lower }}</p>
+<a href="{% url 'propiedades:listado' %}" class="text-decoration-none">← Volver al listado</a>
 
-{% if propiedad.fotos.all %}
-  <div class="galeria">
-    {% for f in propiedad.fotos.all %}
-      <a href="{{ f.imagen.url }}" target="_blank">
-        <img src="{{ f.imagen.url }}" alt="{{ propiedad.titulo }}">
-      </a>
-    {% endfor %}
+<div class="row g-4 mt-1">
+  <div class="col-lg-8">
+    {% with fotos=propiedad.fotos.all %}
+      {% if propiedad.foto or fotos %}
+        <div id="carouselFotos" class="carousel slide mb-4 rounded overflow-hidden shadow-sm">
+          <div class="carousel-inner">
+            {% if propiedad.foto %}
+              <div class="carousel-item active">
+                <img src="{{ propiedad.foto.url }}" class="d-block w-100 foto-detalle" alt="{{ propiedad.titulo }}">
+              </div>
+            {% endif %}
+            {% for f in fotos %}
+              <div class="carousel-item{% if not propiedad.foto and forloop.first %} active{% endif %}">
+                <img src="{{ f.imagen.url }}" class="d-block w-100 foto-detalle" alt="{{ propiedad.titulo }}">
+              </div>
+            {% endfor %}
+          </div>
+          {% if propiedad.foto and fotos or fotos|length > 1 %}
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselFotos" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselFotos" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Siguiente</span>
+            </button>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <span class="badge badge-operacion">{{ propiedad.get_operacion_display }}</span>
+    <span class="etiqueta ms-2">{{ propiedad.get_tipo_display }} · {{ propiedad.zona }}</span>
+    <h1 class="h2 mt-2">{{ propiedad.titulo }}</h1>
+
+    <div class="d-flex flex-wrap gap-4 my-3">
+      {% if propiedad.ambientes %}<div><strong>{{ propiedad.ambientes }}</strong> ambientes</div>{% endif %}
+      {% if propiedad.metros_cuadrados %}<div><strong>{{ propiedad.metros_cuadrados }}</strong> m²</div>{% endif %}
+      {% if propiedad.direccion %}<div>{{ propiedad.direccion }}</div>{% endif %}
+    </div>
+
+    <p>{{ propiedad.descripcion|linebreaksbr }}</p>
   </div>
-{% endif %}
 
-<p class="precio">{{ propiedad.moneda }} {{ propiedad.precio|floatformat:0 }}</p>
-
-<ul>
-  <li>Zona: {{ propiedad.zona }}</li>
-  {% if propiedad.direccion %}<li>Dirección: {{ propiedad.direccion }}</li>{% endif %}
-  {% if propiedad.ambientes %}<li>Ambientes: {{ propiedad.ambientes }}</li>{% endif %}
-  {% if propiedad.metros_cuadrados %}<li>Superficie: {{ propiedad.metros_cuadrados }} m²</li>{% endif %}
-</ul>
-
-<p>{{ propiedad.descripcion|linebreaksbr }}</p>
-
-<h2>Consultar por esta propiedad</h2>
-<form method="post" class="consulta">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Enviar consulta</button>
-</form>
+  <div class="col-lg-4">
+    <div class="card border-0 shadow-sm lateral">
+      <div class="card-body">
+        <div class="precio fs-3">{{ propiedad.moneda }} {{ propiedad.precio|floatformat:0 }}</div>
+        <hr>
+        <h2 class="h5 mb-3">Consultar por esta propiedad</h2>
+        <form method="post">
+          {% csrf_token %}
+          {% for campo in form %}
+            <div class="mb-3">
+              <label class="form-label" for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+              {{ campo }}
+              {% for error in campo.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+            </div>
+          {% endfor %}
+          <button type="submit" class="btn btn-primary w-100">Enviar consulta</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -120,15 +120,28 @@ STATIC_URL = 'static/'
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
-
 MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+    "default": {
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "OPTIONS": {
+            "host": "smtp.gmail.com",
+            "use_tls": True,
+            "username": "pelado2195@gmail.com",
+            "password": "wzizdvyetakijlak",
+        },
     },
 }
+DEFAULT_FROM_EMAIL = "pelado2195@gmail.com"
+EMAIL_INMOBILIARIA = "pelado2195@gmail.com"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 LANGUAGE_CODE = "es-ar"
 TIME_ZONE = "America/Argentina/Buenos_Aires"
+
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
