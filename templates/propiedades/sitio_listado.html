@@ -1,0 +1,180 @@
+{% extends "propiedades/base.html" %}
+
+{% block titulo %}Propiedades{% endblock %}
+
+{% block contenido %}
+<div class="hero-card mb-4 d-flex flex-wrap align-items-center justify-content-between gap-2">
+  <div>
+    <h1 class="h2 mb-1">Propiedades disponibles</h1>
+    <p class="text-muted mb-0">Casas, departamentos, terrenos y locales.</p>
+  </div>
+  <span id="contador" class="badge text-bg-secondary fs-6 fw-semibold">{{ total }} resultado{{ total|pluralize }}</span>
+</div>
+
+{% if propiedades %}
+<form id="filtros" class="filtros-card mb-4" role="search">
+  <div class="row g-2 align-items-end">
+    <div class="col-12 col-md-3">
+      <label for="f-operacion" class="form-label small fw-semibold mb-1">Operación</label>
+      <select id="f-operacion" class="form-select">
+        <option value="">Venta o alquiler</option>
+        {% for valor, nombre in operaciones %}<option value="{{ valor }}">{{ nombre }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-12 col-md-3">
+      <label for="f-tipo" class="form-label small fw-semibold mb-1">Tipo</label>
+      <select id="f-tipo" class="form-select">
+        <option value="">Todos los tipos</option>
+        {% for valor, nombre in tipos %}<option value="{{ valor }}">{{ nombre }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-12 col-md-3">
+      <label for="f-zona" class="form-label small fw-semibold mb-1">Zona</label>
+      <input id="f-zona" type="text" class="form-control" placeholder="Ej: Centro">
+    </div>
+    <div class="col-12 col-md-3 d-flex gap-2">
+      <button type="submit" class="btn btn-primary flex-grow-1"><i class="bi bi-search me-1"></i>Buscar</button>
+      <button type="button" id="limpiar" class="btn btn-outline-secondary d-none" title="Limpiar filtros" aria-label="Limpiar filtros"><i class="bi bi-x-lg"></i></button>
+    </div>
+  </div>
+</form>
+
+<div id="grilla" class="row g-4">
+  {% for p in propiedades %}
+  <div class="col-12 col-md-6 col-lg-4 item-propiedad" data-tipo="{{ p.tipo }}" data-operacion="{{ p.operacion }}" data-zona="{{ p.zona_norm }}">
+    <a class="card card-propiedad h-100 text-decoration-none" href="{% url 'propiedades:detalle' p.pk %}">
+      <div class="card-media">
+        {% if p.card_url %}
+          <img src="{{ p.card_url }}" class="card-img-top" alt="{{ p.titulo }}" loading="lazy">
+        {% else %}
+          <div class="sin-foto"><i class="bi bi-image fs-1"></i></div>
+        {% endif %}
+        <span class="badge badge-operacion">{{ p.get_operacion_display }}</span>
+      </div>
+      <div class="card-body d-flex flex-column">
+        <div class="etiqueta mb-1"><i class="bi bi-geo-alt me-1"></i>{{ p.zona }} · {{ p.get_tipo_display }}</div>
+        <h2 class="h5 card-title">{{ p.titulo }}</h2>
+        <div class="meta-propiedad mt-1 mb-3">
+          {% if p.ambientes %}<span><i class="bi bi-door-open me-1"></i>{{ p.ambientes }} amb.</span>{% endif %}
+          {% if p.metros_cuadrados %}<span><i class="bi bi-rulers me-1"></i>{{ p.metros_cuadrados }} m²</span>{% endif %}
+        </div>
+        <div class="precio fs-5 mt-auto"><small class="moneda">{{ p.moneda }}</small> {{ p.precio|floatformat:"0g" }}</div>
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+
+<div id="vacio" class="text-center py-5 d-none">
+  <i class="bi bi-house-slash fs-1 text-muted"></i>
+  <p class="mt-3 mb-3 text-muted">No hay propiedades con esos filtros.</p>
+  <button type="button" id="ver-todas" class="btn btn-primary">Ver todas las propiedades</button>
+</div>
+
+<nav id="paginacion" class="mt-4 d-none" aria-label="Paginación"></nav>
+
+<script>
+(function () {
+  var POR_PAGINA = 9;
+  var items = Array.prototype.slice.call(document.querySelectorAll('.item-propiedad'));
+  var form = document.getElementById('filtros');
+  var selOp = document.getElementById('f-operacion');
+  var selTipo = document.getElementById('f-tipo');
+  var inZona = document.getElementById('f-zona');
+  var grilla = document.getElementById('grilla');
+  var vacio = document.getElementById('vacio');
+  var pag = document.getElementById('paginacion');
+  var contador = document.getElementById('contador');
+  var btnLimpiar = document.getElementById('limpiar');
+  var pagina = 1;
+
+  function norm(s) {
+    return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  }
+
+  function leerURL() {
+    var q = new URLSearchParams(window.location.search);
+    selOp.value = q.get('operacion') || '';
+    selTipo.value = q.get('tipo') || '';
+    inZona.value = q.get('zona') || '';
+    pagina = parseInt(q.get('page'), 10) || 1;
+  }
+
+  function actualizarURL() {
+    var q = new URLSearchParams();
+    if (selOp.value) q.set('operacion', selOp.value);
+    if (selTipo.value) q.set('tipo', selTipo.value);
+    if (inZona.value.trim()) q.set('zona', inZona.value.trim());
+    if (pagina > 1) q.set('page', pagina);
+    var s = q.toString();
+    window.history.replaceState(null, '', window.location.pathname + (s ? '?' + s : ''));
+  }
+
+  function filtrar() {
+    var op = selOp.value, tipo = selTipo.value, zona = norm(inZona.value);
+    return items.filter(function (el) {
+      return (!op || el.dataset.operacion === op) &&
+             (!tipo || el.dataset.tipo === tipo) &&
+             (!zona || el.dataset.zona.indexOf(zona) !== -1);
+    });
+  }
+
+  function dibujarPaginacion(paginas) {
+    pag.classList.toggle('d-none', paginas <= 1);
+    if (paginas <= 1) { pag.innerHTML = ''; return; }
+    var hayAnt = pagina > 1, haySig = pagina < paginas;
+    pag.innerHTML =
+      '<ul class="pagination justify-content-center mb-0">' +
+      '<li class="page-item' + (hayAnt ? '' : ' disabled') + '"><a class="page-link" href="#" data-ir="' + (pagina - 1) + '"><i class="bi bi-chevron-left"></i> Anterior</a></li>' +
+      '<li class="page-item active" aria-current="page"><span class="page-link">' + pagina + ' / ' + paginas + '</span></li>' +
+      '<li class="page-item' + (haySig ? '' : ' disabled') + '"><a class="page-link" href="#" data-ir="' + (pagina + 1) + '">Siguiente <i class="bi bi-chevron-right"></i></a></li>' +
+      '</ul>';
+  }
+
+  function render() {
+    var lista = filtrar();
+    var total = lista.length;
+    var paginas = Math.max(1, Math.ceil(total / POR_PAGINA));
+    pagina = Math.min(Math.max(1, pagina), paginas);
+    var inicio = (pagina - 1) * POR_PAGINA;
+    var visibles = lista.slice(inicio, inicio + POR_PAGINA);
+    items.forEach(function (el) { el.classList.toggle('d-none', visibles.indexOf(el) === -1); });
+    contador.textContent = total + (total === 1 ? ' resultado' : ' resultados');
+    vacio.classList.toggle('d-none', total !== 0);
+    btnLimpiar.classList.toggle('d-none', !(selOp.value || selTipo.value || inZona.value.trim()));
+    dibujarPaginacion(paginas);
+    actualizarURL();
+  }
+
+  function limpiar() {
+    selOp.value = ''; selTipo.value = ''; inZona.value = '';
+    pagina = 1; render();
+  }
+
+  form.addEventListener('submit', function (e) { e.preventDefault(); pagina = 1; render(); });
+  selOp.addEventListener('change', function () { pagina = 1; render(); });
+  selTipo.addEventListener('change', function () { pagina = 1; render(); });
+  inZona.addEventListener('input', function () { pagina = 1; render(); });
+  btnLimpiar.addEventListener('click', limpiar);
+  document.getElementById('ver-todas').addEventListener('click', limpiar);
+  pag.addEventListener('click', function (e) {
+    var enlace = e.target.closest('a[data-ir]');
+    if (!enlace) return;
+    e.preventDefault();
+    if (enlace.parentNode.classList.contains('disabled')) return;
+    pagina = parseInt(enlace.getAttribute('data-ir'), 10);
+    render();
+    if (grilla.scrollIntoView) grilla.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  leerURL();
+  render();
+})();
+</script>
+{% else %}
+<div class="text-center py-5">
+  <i class="bi bi-house fs-1 text-muted"></i>
+  <p class="mt-3 mb-0 text-muted">Pronto vamos a publicar nuevas propiedades.</p>
+</div>
+{% endif %}
+{% endblock %}

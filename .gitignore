@@ -5,3 +5,4 @@ __pycache__/
 *.pyc
 db.sqlite3
 config/local_settings.py
+dist/

@@ -1,0 +1,12 @@
+{% extends "propiedades/base.html" %}
+
+{% block titulo %}Página no encontrada{% endblock %}
+
+{% block contenido %}
+<div class="text-center py-5">
+  <i class="bi bi-house-slash fs-1 text-muted"></i>
+  <h1 class="h3 mt-3">Esta página no existe</h1>
+  <p class="text-muted">Puede que la propiedad ya no esté disponible.</p>
+  <a href="{% url 'propiedades:listado' %}" class="btn btn-primary">Ver propiedades</a>
+</div>
+{% endblock %}
