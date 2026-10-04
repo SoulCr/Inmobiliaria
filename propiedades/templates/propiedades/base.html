@@ -23,38 +23,17 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm py-2 py-md-3">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'propiedades:listado' %}">
-                <img src="{% static 'propiedades/logo_cuenca_blanco.png' %}" alt="Cuenca Propiedades Zona Sur"
-                    class="navbar-logo">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Abrir menú">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-lg-center">
-                    {% url 'propiedades:listado' as url_listado %}
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.path == url_listado or '/propiedad/' in request.path %}active{% endif %}"
-                            href="{{ url_listado }}"></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contacto"></a>
-                    </li>
-                    {% if user.is_staff %}
-                    {% endif %}
-                    <li class="nav-item">
-                        <button id="toggleTema" class="btn btn-sm nav-link border-0" type="button"
-                            aria-label="Cambiar tema">
-                            <i class="bi bi-moon-stars-fill"></i>
-                        </button>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <nav class="navbar navbar-dark navbar-custom shadow-sm py-2 py-md-3">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'propiedades:listado' %}">
+            <img src="{% static 'propiedades/logo_cuenca_blanco.png' %}" alt="Cuenca Propiedades Zona Sur"
+                class="navbar-logo">
+        </a>
+        <button id="toggleTema" class="btn btn-sm nav-link border-0" type="button" aria-label="Cambiar tema">
+            <i class="bi bi-moon-stars-fill"></i>
+        </button>
+    </div>
+</nav>
 
     <main class="flex-grow-1 container-fluid container-xl my-3 my-md-5">
         <div class="row justify-content-center">

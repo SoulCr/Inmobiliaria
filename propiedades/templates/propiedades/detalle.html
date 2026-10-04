@@ -3,22 +3,27 @@
 {% block titulo %}{{ propiedad.titulo }}{% endblock %}
 
 {% block contenido %}
-<a href="{% url 'propiedades:listado' %}" class="text-decoration-none">← Volver al listado</a>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'propiedades:listado' %}">Propiedades</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ propiedad.titulo }}</li>
+  </ol>
+</nav>
 
-<div class="row g-4 mt-1">
+<div class="row g-4">
   <div class="col-lg-8">
     {% with fotos=propiedad.fotos.all %}
       {% if propiedad.foto or fotos %}
-        <div id="carouselFotos" class="carousel slide mb-4 rounded overflow-hidden shadow-sm">
+        <div id="carouselFotos" class="carousel slide mb-4 rounded-3 overflow-hidden shadow-sm">
           <div class="carousel-inner">
             {% if propiedad.foto %}
               <div class="carousel-item active">
-                <img src="{{ propiedad.foto.url }}" class="d-block w-100 foto-detalle" alt="{{ propiedad.titulo }}">
+                <img src="{{ propiedad.foto.url }}" class="d-block foto-detalle" alt="{{ propiedad.titulo }}">
               </div>
             {% endif %}
             {% for f in fotos %}
               <div class="carousel-item{% if not propiedad.foto and forloop.first %} active{% endif %}">
-                <img src="{{ f.imagen.url }}" class="d-block w-100 foto-detalle" alt="{{ propiedad.titulo }}">
+                <img src="{{ f.imagen.url }}" class="d-block foto-detalle" alt="{{ propiedad.titulo }}">
               </div>
             {% endfor %}
           </div>
@@ -33,38 +38,45 @@
             </button>
           {% endif %}
         </div>
+      {% else %}
+        <div class="sin-foto sin-foto-detalle rounded-3 mb-4"><i class="bi bi-image fs-1"></i></div>
       {% endif %}
     {% endwith %}
 
     <span class="badge badge-operacion">{{ propiedad.get_operacion_display }}</span>
-    <span class="etiqueta ms-2">{{ propiedad.get_tipo_display }} · {{ propiedad.zona }}</span>
+    <span class="etiqueta ms-2">{{ propiedad.get_tipo_display }}</span>
     <h1 class="h2 mt-2">{{ propiedad.titulo }}</h1>
 
-    <div class="d-flex flex-wrap gap-4 my-3">
-      {% if propiedad.ambientes %}<div><strong>{{ propiedad.ambientes }}</strong> ambientes</div>{% endif %}
-      {% if propiedad.metros_cuadrados %}<div><strong>{{ propiedad.metros_cuadrados }}</strong> m²</div>{% endif %}
-      {% if propiedad.direccion %}<div>{{ propiedad.direccion }}</div>{% endif %}
+    <div class="d-flex flex-wrap gap-2 my-3">
+      <div class="dato"><i class="bi bi-geo-alt"></i>{{ propiedad.zona }}</div>
+      {% if propiedad.ambientes %}<div class="dato"><i class="bi bi-door-open"></i>{{ propiedad.ambientes }} ambiente{{ propiedad.ambientes|pluralize }}</div>{% endif %}
+      {% if propiedad.metros_cuadrados %}<div class="dato"><i class="bi bi-rulers"></i>{{ propiedad.metros_cuadrados }} m²</div>{% endif %}
+      {% if propiedad.direccion %}<div class="dato"><i class="bi bi-signpost-2"></i>{{ propiedad.direccion }}</div>{% endif %}
     </div>
 
-    <p>{{ propiedad.descripcion|linebreaksbr }}</p>
+    {% if propiedad.descripcion %}
+      <h2 class="h5 mt-4">Descripción</h2>
+      <p>{{ propiedad.descripcion|linebreaksbr }}</p>
+    {% endif %}
   </div>
 
   <div class="col-lg-4">
-    <div class="card border-0 shadow-sm lateral">
+    <div class="card lateral shadow-sm">
       <div class="card-body">
-        <div class="precio fs-3">{{ propiedad.moneda }} {{ propiedad.precio|floatformat:0 }}</div>
+        <div class="precio fs-3"><small class="moneda">{{ propiedad.moneda }}</small> {{ propiedad.precio|floatformat:"0g" }}</div>
         <hr>
         <h2 class="h5 mb-3">Consultar por esta propiedad</h2>
         <form method="post">
           {% csrf_token %}
+          {% for error in form.non_field_errors %}<div class="alert alert-danger py-2">{{ error }}</div>{% endfor %}
           {% for campo in form %}
             <div class="mb-3">
-              <label class="form-label" for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+              <label class="form-label small fw-semibold" for="{{ campo.id_for_label }}">{{ campo.label }}</label>
               {{ campo }}
-              {% for error in campo.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              {% for error in campo.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
             </div>
           {% endfor %}
-          <button type="submit" class="btn btn-primary w-100">Enviar consulta</button>
+          <button type="submit" class="btn btn-primary w-100"><i class="bi bi-send me-1"></i>Enviar consulta</button>
         </form>
       </div>
     </div>
