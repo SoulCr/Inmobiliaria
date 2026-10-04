@@ -38,10 +38,10 @@
                     {% url 'propiedades:listado' as url_listado %}
                     <li class="nav-item">
                         <a class="nav-link {% if request.path == url_listado or '/propiedad/' in request.path %}active{% endif %}"
-                            href="{{ url_listado }}">Propiedades</a>
+                            href="{{ url_listado }}"></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#contacto">Quienes Somos</a>
+                        <a class="nav-link" href="#contacto"></a>
                     </li>
                     {% if user.is_staff %}
                     {% endif %}
