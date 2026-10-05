@@ -141,7 +141,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 LANGUAGE_CODE = "es-ar"
 TIME_ZONE = "America/Argentina/Buenos_Aires"
 
-SITIO_API_URL = "http://127.0.0.1:8000/api/consultas/"
+#SITIO_API_URL = "http://127.0.0.1:8000/api/consultas/"
 SITIO_ORIGENES_PERMITIDOS = ["http://localhost:8001", "http://127.0.0.1:8001"]
 try:
     from .local_settings import *
