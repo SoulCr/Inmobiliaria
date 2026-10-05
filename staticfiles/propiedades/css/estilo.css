@@ -1,0 +1,282 @@
+/* ==========================================================
+   Cuenca Propiedades - estilos propios (sobre Bootstrap 5.3)
+   Misma estructura y medidas que el proyecto "eventos",
+   con la paleta del logo: azul marino y dorado.
+   ========================================================== */
+
+:root {
+  --color-bg-body: #E8EBF0;
+  --color-bg-card: #FFFFFF;      /* contenedor principal */
+  --color-bg-card2: #FFFFFF;     /* tarjetas dentro del contenedor */
+  --color-nav: #14213D;          /* barra superior y pie */
+  --color-heading: #14213D;      /* títulos y precios */
+  --color-text: #1F2937;
+  --color-muted: #6B7280;
+  --color-accent: #B8924A;       /* dorado del logo */
+  --color-border: rgba(20, 33, 61, .12);
+  --color-btn: #14213D;
+  --color-btn-hover: #243B66;
+  --color-btn-active: #0E1729;
+  --sombra: 0 4px 24px rgba(20, 33, 61, .08);
+  --radio: 16px;
+  --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --bs-link-color-rgb: 20, 33, 61;
+  --bs-link-hover-color-rgb: 36, 59, 102;
+}
+
+[data-bs-theme="dark"] {
+  --color-bg-body: #0E1217;
+  --color-bg-card: #171C23;
+  --color-bg-card2: #1E252E;
+  --color-nav: #0F1A30;
+  --color-heading: #A9BEE0;
+  --color-text: #E5E7EB;
+  --color-muted: #9CA3AF;
+  --color-border: rgba(255, 255, 255, .10);
+  --color-btn: #2F4C82;
+  --color-btn-hover: #3C5F9F;
+  --color-btn-active: #264070;
+  --sombra: 0 4px 24px rgba(0, 0, 0, .35);
+
+  --bs-link-color-rgb: 169, 190, 224;
+  --bs-link-hover-color-rgb: 205, 218, 240;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-main);
+  background: var(--color-bg-body);
+  color: var(--color-text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* ---------- Barra superior ---------- */
+.navbar-custom {
+  background: var(--color-nav);
+  border-bottom: 3px solid var(--color-accent);
+}
+
+.navbar-logo {
+  width: 120px;
+  height: auto;
+}
+
+.navbar-custom .navbar-toggler { border-color: rgba(255, 255, 255, .35); }
+
+.navbar-custom .nav-link {
+  color: rgba(255, 255, 255, .85);
+  font-weight: 500;
+  padding: .5rem 1rem;
+  border-radius: 8px;
+  transition: background-color .15s, color .15s;
+}
+
+.navbar-custom .nav-link:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, .08);
+}
+
+.navbar-custom .nav-link.active {
+  color: var(--color-accent);
+  background: rgba(184, 146, 74, .14);
+  font-weight: 600;
+}
+
+/* ---------- Contenedor principal ---------- */
+.content-container {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+.hero-card {
+  background: rgba(20, 33, 61, .04);
+  border-left: 6px solid var(--color-accent);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+}
+
+[data-bs-theme="dark"] .hero-card { background: rgba(255, 255, 255, .04); }
+
+.filtros-card {
+  background: var(--color-bg-card2);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+/* ---------- Formularios y botones ---------- */
+.form-control, .form-select { border-radius: 8px; }
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 .2rem rgba(184, 146, 74, .25);
+}
+
+.btn { border-radius: 8px; font-weight: 600; }
+
+.btn-primary {
+  --bs-btn-bg: var(--color-btn);
+  --bs-btn-border-color: var(--color-btn);
+  --bs-btn-hover-bg: var(--color-btn-hover);
+  --bs-btn-hover-border-color: var(--color-btn-hover);
+  --bs-btn-active-bg: var(--color-btn-active);
+  --bs-btn-active-border-color: var(--color-btn-active);
+  --bs-btn-color: #fff;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-color: #fff;
+}
+
+/* ---------- Tarjetas del listado ---------- */
+.card-propiedad {
+  background: var(--color-bg-card2);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+}
+
+.card-propiedad:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(20, 33, 61, .16);
+  border-color: var(--color-accent);
+}
+
+.card-propiedad:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.card-media { position: relative; }
+
+.card-propiedad .card-img-top,
+.sin-foto {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.sin-foto {
+  background: var(--color-border);
+  color: var(--color-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sin-foto-detalle { aspect-ratio: 16 / 10; }
+
+.card-media .badge-operacion {
+  position: absolute;
+  top: .75rem;
+  left: .75rem;
+}
+
+.badge-operacion {
+  background: var(--color-accent);
+  color: #14213D;
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+
+.etiqueta { color: var(--color-muted); font-size: .85rem; }
+
+.meta-propiedad {
+  display: flex;
+  gap: 1rem;
+  color: var(--color-muted);
+  font-size: .85rem;
+}
+
+.precio {
+  color: var(--color-heading);
+  font-weight: 800;
+}
+
+.precio .moneda {
+  font-size: .7em;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+/* ---------- Detalle ---------- */
+.foto-detalle {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.dato {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem .9rem;
+  background: var(--color-bg-card2);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  font-size: .95rem;
+}
+
+.dato i { color: var(--color-accent); }
+
+.lateral { background: var(--color-bg-card2); border: 1px solid var(--color-border); border-radius: 14px; }
+
+@media (min-width: 992px) {
+  .lateral { position: sticky; top: 1.5rem; }
+}
+
+.breadcrumb { --bs-breadcrumb-divider-color: var(--color-muted); }
+
+/* ---------- Paginación ---------- */
+.pagination {
+  --bs-pagination-color: var(--color-heading);
+  --bs-pagination-bg: var(--color-bg-card2);
+  --bs-pagination-border-color: var(--color-border);
+  --bs-pagination-hover-color: var(--color-heading);
+  --bs-pagination-hover-bg: var(--color-border);
+  --bs-pagination-hover-border-color: var(--color-border);
+  --bs-pagination-active-bg: var(--color-btn);
+  --bs-pagination-active-border-color: var(--color-btn);
+  --bs-pagination-active-color: #fff;
+  --bs-pagination-focus-color: var(--color-heading);
+  --bs-pagination-disabled-bg: var(--color-bg-card2);
+  --bs-pagination-disabled-border-color: var(--color-border);
+}
+
+/* ---------- Pie ---------- */
+.footer-custom {
+  background: var(--color-nav);
+  border-top: 3px solid var(--color-accent);
+  color: #cbd5e1;
+}
+
+.footer-logo-img {
+  width: 120px;
+  height: auto;
+}
+
+.extra-small { font-size: .78rem; }
+
+/* ---------- Pantallas chicas ---------- */
+@media (max-width: 576px) {
+  .navbar-logo { width: 96px; }
+  .hero-card { padding: 1rem; }
+}
+
+/* ---------- Respetar "reducir movimiento" ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .card-propiedad, .navbar-custom .nav-link { transition: none; }
+  .card-propiedad:hover { transform: none; }
+}
